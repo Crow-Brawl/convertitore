@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONVERTITORE DI UNITÀ — DRAGON BALL</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Oswald:wght@400;600;700&family=Share+Tech+Mono&display=swap');
+
+  :root {
+    --bg:         #0a0500;
+    --panel:      #120a02;
+    --panel2:     #1a0f03;
+    --border:     #7a3a00;
+    --accent:     #ffcc00;   /* Ki giallo */
+    --accent2:    #ff6600;   /* aura arancione */
+    --red:        #ff2200;   /* rosso Super Saiyan */
+    --blue:       #44aaff;   /* SSB */
+    --text:       #ffe8b0;
+    --text-dim:   #8a5a20;
+    --text-faint: #3a1f00;
+    --glow:       0 0 14px rgba(255,204,0,.7), 0 0 30px rgba(255,153,0,.35);
+    --glow-a2:    0 0 14px rgba(255,102,0,.7), 0 0 28px rgba(255,60,0,.3);
+    --glow-red:   0 0 14px rgba(255,34,0,.8);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Oswald', sans-serif;
+    font-size: 15px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── energia Ki: raggi radiali sfumati ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255,180,0,.10) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 40% at 50% 110%, rgba(255,80,0,.08) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+    animation: aura-pulse 3s ease-in-out infinite alternate;
+  }
+  @keyframes aura-pulse {
+    from { opacity: .7; }
+    to   { opacity: 1; }
+  }
+
+  /* ── stelle di sfondo ── */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 12% 18%, rgba(255,220,100,.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 34% 72%, rgba(255,200,80,.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 67% 25%, rgba(255,240,120,.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 60%, rgba(255,180,60,.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 88%, rgba(255,210,90,.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 22% 45%, rgba(255,230,100,.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 78% 82%, rgba(255,190,70,.4) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 48% 10%, rgba(255,255,200,.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 91% 35%, rgba(255,220,100,.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 6%  90%, rgba(255,200,80,.4) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+
+  /* ══════════ HEADER ══════════ */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 0 18px;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 12px;
+    position: relative;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+  }
+
+  .logo { display: flex; flex-direction: column; }
+
+  .logo-main {
+    font-family: 'Bangers', cursive;
+    font-size: 38px;
+    letter-spacing: .08em;
+    line-height: 1;
+    background: linear-gradient(180deg, #fff176 0%, #ffcc00 40%, #ff8800 80%, #ff4400 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 8px rgba(255,180,0,.8)) drop-shadow(0 2px 0 rgba(0,0,0,.9));
+  }
+
+  .logo-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: .35em;
+    margin-top: 3px;
+    text-transform: uppercase;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* sfera del drago SVG inline */
+  .dragonball {
+    width: 46px; height: 46px;
+    animation: db-spin 8s linear infinite;
+    filter: drop-shadow(0 0 8px rgba(255,160,0,.8));
+  }
+  @keyframes db-spin {
+    from { transform: rotateY(0deg); }
+    to   { transform: rotateY(360deg); }
+  }
+
+  .power-level {
+    font-family: 'Bangers', cursive;
+    font-size: 13px;
+    letter-spacing: .12em;
+    color: var(--accent2);
+    text-shadow: var(--glow-a2);
+    line-height: 1.3;
+    text-align: right;
+  }
+  .power-level span {
+    display: block;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: .2em;
+  }
+
+  /* ══════════ CATEGORY TABS ══════════ */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+
+  .tab {
+    font-family: 'Bangers', cursive;
+    font-size: 14px;
+    letter-spacing: .12em;
+    padding: 6px 16px;
+    border: 2px solid var(--border);
+    background: rgba(30,10,0,.6);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all .2s;
+    text-transform: uppercase;
+    border-radius: 3px;
+    position: relative;
+    overflow: hidden;
+  }
+  .tab::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,180,0,.0), rgba(255,100,0,.0));
+    transition: background .2s;
+  }
+  .tab:hover {
+    border-color: var(--accent2);
+    color: var(--accent);
+    text-shadow: var(--glow);
+  }
+  .tab:hover::before {
+    background: linear-gradient(135deg, rgba(255,180,0,.08), rgba(255,100,0,.12));
+  }
+  .tab.active {
+    border-color: var(--accent);
+    background: rgba(255,160,0,.12);
+    color: var(--accent);
+    text-shadow: var(--glow);
+    box-shadow: 0 0 10px rgba(255,180,0,.25), inset 0 0 10px rgba(255,160,0,.08);
+  }
+
+  /* ══════════ PANEL ══════════ */
+  .panel { display: none; animation: fadein .35s ease; }
+  .panel.active { display: block; }
+  @keyframes fadein {
+    from { opacity:0; transform:translateY(8px) scale(.99); }
+    to   { opacity:1; transform:none; }
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .panel-icon { font-size: 28px; line-height: 1; }
+  .panel-title {
+    font-family: 'Bangers', cursive;
+    font-size: 26px;
+    letter-spacing: .15em;
+    background: linear-gradient(90deg, #ffcc00, #ff8800);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 6px rgba(255,160,0,.6));
+  }
+  .panel-desc {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: .15em;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  /* ══════════ CONVERTER GRID ══════════ */
+  .converters {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 14px;
+  }
+
+  .conv-card {
+    background: linear-gradient(160deg, #1a0c02 0%, #0f0700 100%);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 18px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color .25s, box-shadow .25s;
+  }
+  /* aura glow on card top */
+  .conv-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 10%; right: 10%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+    opacity: 0;
+    transition: opacity .3s;
+    border-radius: 2px;
+  }
+  /* subtle ki energy bottom */
+  .conv-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 30px;
+    background: linear-gradient(0deg, rgba(255,100,0,.04), transparent);
+    pointer-events: none;
+  }
+  .conv-card:hover {
+    border-color: rgba(255,180,0,.5);
+    box-shadow: 0 0 16px rgba(255,140,0,.15), inset 0 0 20px rgba(255,80,0,.03);
+  }
+  .conv-card:hover::before { opacity: 1; }
+
+  .conv-name {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .3em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .io-row {
+    display: grid;
+    grid-template-columns: 1fr 30px 1fr;
+    gap: 8px;
+    align-items: end;
+    margin-bottom: 10px;
+  }
+
+  .io-group { display: flex; flex-direction: column; gap: 4px; }
+
+  .io-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .2em;
+    color: var(--text-dim);
+  }
+
+  .io-input {
+    background: #0d0500;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 16px;
+    padding: 8px 10px;
+    width: 100%;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+    -moz-appearance: textfield;
+  }
+  .io-input::-webkit-outer-spin-button,
+  .io-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .io-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(255,204,0,.15), 0 0 8px rgba(255,160,0,.2);
+  }
+  .io-input.result {
+    color: var(--accent);
+    text-shadow: var(--glow);
+    cursor: default;
+  }
+
+  .arrow-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px; height: 36px;
+    background: rgba(255,100,0,.08);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 16px;
+    align-self: end;
+    transition: all .2s;
+    padding: 0;
+  }
+  .arrow-btn:hover {
+    border-color: var(--accent2);
+    color: var(--accent);
+    background: rgba(255,120,0,.18);
+    box-shadow: 0 0 8px rgba(255,100,0,.4);
+    transform: scale(1.15);
+  }
+
+  /* formula box */
+  .formula-box {
+    background: rgba(0,0,0,.5);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 2px 2px 0;
+    padding: 6px 10px;
+    margin-top: 4px;
+    position: relative;
+  }
+  .formula-label {
+    font-family: 'Bangers', cursive;
+    font-size: 10px;
+    letter-spacing: .25em;
+    color: var(--accent2);
+    margin-bottom: 2px;
+    text-shadow: var(--glow-a2);
+  }
+  .formula-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    word-break: break-all;
+    min-height: 14px;
+    text-shadow: 0 0 6px rgba(255,204,0,.4);
+  }
+
+  /* corner ornaments – stelle a 5 punte stilizzate */
+  .corner {
+    position: absolute;
+    width: 0; height: 0;
+    opacity: .5;
+  }
+  .corner.tl {
+    top: 0; left: 0;
+    border-top: 8px solid var(--accent2);
+    border-right: 8px solid transparent;
+  }
+  .corner.br {
+    bottom: 0; right: 0;
+    border-bottom: 8px solid var(--accent2);
+    border-left: 8px solid transparent;
+  }
+
+  /* ══════════ FOOTER ══════════ */
+  footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--text-faint);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  footer span {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-faint);
+    letter-spacing: .2em;
+  }
+  footer .db-footer {
+    font-family: 'Bangers', cursive;
+    font-size: 13px;
+    letter-spacing: .15em;
+    color: var(--border);
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <span class="logo-main">UNIT CONVERTER</span>
+      <span class="logo-sub">SI ⇄ IMPERIAL // AEROSPACE EDITION</span>
+    </div>
+    <div class="header-right">
+      <div class="status-dot"></div>
+      <div class="clock" id="clock">--:--:--</div>
+    </div>
+  </header>
+
+  <!-- TABS -->
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-panel="lunghezza">LUNGHEZZA</button>
+    <button class="tab" data-panel="massa">MASSA</button>
+    <button class="tab" data-panel="forza">FORZA</button>
+    <button class="tab" data-panel="pressione">PRESSIONE</button>
+    <button class="tab" data-panel="velocita">VELOCITÀ</button>
+    <button class="tab" data-panel="temperatura">TEMPERATURA</button>
+    <button class="tab" data-panel="potenza">POTENZA</button>
+    <button class="tab" data-panel="area">AREA</button>
+  </div>
+
+  <!-- ══ LUNGHEZZA ══ -->
+  <div class="panel active" id="panel-lunghezza">
+    <div class="panel-header">
+      <span class="panel-title">LUNGHEZZA</span>
+      <span class="panel-desc">// LENGTH · LINEAR MEASURE</span>
+    </div>
+    <div class="converters" id="conv-lunghezza"></div>
+  </div>
+
+  <!-- ══ MASSA ══ -->
+  <div class="panel" id="panel-massa">
+    <div class="panel-header">
+      <span class="panel-title">MASSA</span>
+      <span class="panel-desc">// MASS · WEIGHT</span>
+    </div>
+    <div class="converters" id="conv-massa"></div>
+  </div>
+
+  <!-- ══ FORZA ══ -->
+  <div class="panel" id="panel-forza">
+    <div class="panel-header">
+      <span class="panel-title">FORZA</span>
+      <span class="panel-desc">// FORCE · THRUST</span>
+    </div>
+    <div class="converters" id="conv-forza"></div>
+  </div>
+
+  <!-- ══ PRESSIONE ══ -->
+  <div class="panel" id="panel-pressione">
+    <div class="panel-header">
+      <span class="panel-title">PRESSIONE</span>
+      <span class="panel-desc">// PRESSURE · STRESS</span>
+    </div>
+    <div class="converters" id="conv-pressione"></div>
+  </div>
+
+  <!-- ══ VELOCITÀ ══ -->
+  <div class="panel" id="panel-velocita">
+    <div class="panel-header">
+      <span class="panel-title">VELOCITÀ</span>
+      <span class="panel-desc">// SPEED · VELOCITY</span>
+    </div>
+    <div class="converters" id="conv-velocita"></div>
+  </div>
+
+  <!-- ══ TEMPERATURA ══ -->
+  <div class="panel" id="panel-temperatura">
+    <div class="panel-header">
+      <span class="panel-title">TEMPERATURA</span>
+      <span class="panel-desc">// TEMPERATURE · THERMAL</span>
+    </div>
+    <div class="converters" id="conv-temperatura"></div>
+  </div>
+
+  <!-- ══ POTENZA ══ -->
+  <div class="panel" id="panel-potenza">
+    <div class="panel-header">
+      <span class="panel-title">POTENZA</span>
+      <span class="panel-desc">// POWER · ENERGY RATE</span>
+    </div>
+    <div class="converters" id="conv-potenza"></div>
+  </div>
+
+  <!-- ══ AREA ══ -->
+  <div class="panel" id="panel-area">
+    <div class="panel-header">
+      <span class="panel-title">AREA</span>
+      <span class="panel-desc">// SURFACE · PLANAR MEASURE</span>
+    </div>
+    <div class="converters" id="conv-area"></div>
+  </div>
+
+  <footer>
+    <span>© UNIT CONVERTER // AEROSPACE EDITION</span>
+    <span>ALL CONVERSIONS ARE EXACT OR BASED ON NIST STANDARDS</span>
+  </footer>
+
+</div><!-- /wrap -->
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  DATA: { name, fromLabel, toLabel, toFn, fromFn, formulaFwd, formulaRev }
+// ═══════════════════════════════════════════════════════
+
+const data = {
+  lunghezza: {
+    title: 'LUNGHEZZA', sub: '// LENGTH',
+    items: [
+      {
+        name: 'Metro → Piede',
+        fromLabel: 'm', toLabel: 'ft',
+        toFn: v => v * 3.280839895,
+        fromFn: v => v / 3.280839895,
+        formulaFwd: v => `${v} m × 3.280839895 = ${fmt(v * 3.280839895)} ft`,
+        formulaRev: v => `${v} ft ÷ 3.280839895 = ${fmt(v / 3.280839895)} m`
+      },
+      {
+        name: 'Metro → Pollice',
+        fromLabel: 'm', toLabel: 'in',
+        toFn: v => v * 39.3700787,
+        fromFn: v => v / 39.3700787,
+        formulaFwd: v => `${v} m × 39.3700787 = ${fmt(v * 39.3700787)} in`,
+        formulaRev: v => `${v} in ÷ 39.3700787 = ${fmt(v / 39.3700787)} m`
+      },
+      {
+        name: 'Chilometro → Miglio',
+        fromLabel: 'km', toLabel: 'mi',
+        toFn: v => v * 0.621371192,
+        fromFn: v => v / 0.621371192,
+        formulaFwd: v => `${v} km × 0.621371192 = ${fmt(v * 0.621371192)} mi`,
+        formulaRev: v => `${v} mi ÷ 0.621371192 = ${fmt(v / 0.621371192)} km`
+      },
+      {
+        name: 'Chilometro → Miglio Nautico',
+        fromLabel: 'km', toLabel: 'NM',
+        toFn: v => v * 0.539956803,
+        fromFn: v => v / 0.539956803,
+        formulaFwd: v => `${v} km × 0.539956803 = ${fmt(v * 0.539956803)} NM`,
+        formulaRev: v => `${v} NM ÷ 0.539956803 = ${fmt(v / 0.539956803)} km`
+      },
+      {
+        name: 'Centimetro → Pollice',
+        fromLabel: 'cm', toLabel: 'in',
+        toFn: v => v * 0.393700787,
+        fromFn: v => v / 0.393700787,
+        formulaFwd: v => `${v} cm × 0.393700787 = ${fmt(v * 0.393700787)} in`,
+        formulaRev: v => `${v} in ÷ 0.393700787 = ${fmt(v / 0.393700787)} cm`
+      },
+      {
+        name: 'Millimetro → Thou (mil)',
+        fromLabel: 'mm', toLabel: 'thou',
+        toFn: v => v * 39.3700787,
+        fromFn: v => v / 39.3700787,
+        formulaFwd: v => `${v} mm × 39.3700787 = ${fmt(v * 39.3700787)} thou`,
+        formulaRev: v => `${v} thou ÷ 39.3700787 = ${fmt(v / 39.3700787)} mm`
+      },
+    ]
+  },
+  massa: {
+    items: [
+      {
+        name: 'Kilogrammo → Libbra',
+        fromLabel: 'kg', toLabel: 'lb',
+        toFn: v => v * 2.204622622,
+        fromFn: v => v / 2.204622622,
+        formulaFwd: v => `${v} kg × 2.204622622 = ${fmt(v * 2.204622622)} lb`,
+        formulaRev: v => `${v} lb ÷ 2.204622622 = ${fmt(v / 2.204622622)} kg`
+      },
+      {
+        name: 'Kilogrammo → Oncia',
+        fromLabel: 'kg', toLabel: 'oz',
+        toFn: v => v * 35.27396195,
+        fromFn: v => v / 35.27396195,
+        formulaFwd: v => `${v} kg × 35.27396195 = ${fmt(v * 35.27396195)} oz`,
+        formulaRev: v => `${v} oz ÷ 35.27396195 = ${fmt(v / 35.27396195)} kg`
+      },
+      {
+        name: 'Tonnellata → Ton (corta)',
+        fromLabel: 't', toLabel: 'ton US',
+        toFn: v => v * 1.102311311,
+        fromFn: v => v / 1.102311311,
+        formulaFwd: v => `${v} t × 1.102311311 = ${fmt(v * 1.102311311)} ton US`,
+        formulaRev: v => `${v} ton US ÷ 1.102311311 = ${fmt(v / 1.102311311)} t`
+      },
+      {
+        name: 'Grammo → Grano (grain)',
+        fromLabel: 'g', toLabel: 'gr',
+        toFn: v => v * 15.43235835,
+        fromFn: v => v / 15.43235835,
+        formulaFwd: v => `${v} g × 15.43235835 = ${fmt(v * 15.43235835)} gr`,
+        formulaRev: v => `${v} gr ÷ 15.43235835 = ${fmt(v / 15.43235835)} g`
+      },
+      {
+        name: 'Kilogrammo → Slug',
+        fromLabel: 'kg', toLabel: 'slug',
+        toFn: v => v * 0.068521766,
+        fromFn: v => v / 0.068521766,
+        formulaFwd: v => `${v} kg × 0.068521766 = ${fmt(v * 0.068521766)} slug`,
+        formulaRev: v => `${v} slug ÷ 0.068521766 = ${fmt(v / 0.068521766)} kg`
+      },
+    ]
+  },
+  forza: {
+    items: [
+      {
+        name: 'Newton → Libbra-Forza',
+        fromLabel: 'N', toLabel: 'lbf',
+        toFn: v => v * 0.224808943,
+        fromFn: v => v / 0.224808943,
+        formulaFwd: v => `${v} N × 0.224808943 = ${fmt(v * 0.224808943)} lbf`,
+        formulaRev: v => `${v} lbf ÷ 0.224808943 = ${fmt(v / 0.224808943)} N`
+      },
+      {
+        name: 'Newton → Chilogrammo-Forza',
+        fromLabel: 'N', toLabel: 'kgf',
+        toFn: v => v * 0.101971621,
+        fromFn: v => v / 0.101971621,
+        formulaFwd: v => `${v} N × 0.101971621 = ${fmt(v * 0.101971621)} kgf`,
+        formulaRev: v => `${v} kgf ÷ 0.101971621 = ${fmt(v / 0.101971621)} N`
+      },
+      {
+        name: 'Kilonewton → Kip',
+        fromLabel: 'kN', toLabel: 'kip',
+        toFn: v => v * 0.224808943,
+        fromFn: v => v / 0.224808943,
+        formulaFwd: v => `${v} kN × 0.224808943 = ${fmt(v * 0.224808943)} kip`,
+        formulaRev: v => `${v} kip ÷ 0.224808943 = ${fmt(v / 0.224808943)} kN`
+      },
+      {
+        name: 'Dyne → Libbra-Forza',
+        fromLabel: 'dyn', toLabel: 'lbf',
+        toFn: v => v * 2.24808943e-6,
+        fromFn: v => v / 2.24808943e-6,
+        formulaFwd: v => `${v} dyn × 2.24808943×10⁻⁶ = ${fmt(v * 2.24808943e-6)} lbf`,
+        formulaRev: v => `${v} lbf ÷ 2.24808943×10⁻⁶ = ${fmt(v / 2.24808943e-6)} dyn`
+      },
+    ]
+  },
+  pressione: {
+    items: [
+      {
+        name: 'Pascal → PSI',
+        fromLabel: 'Pa', toLabel: 'psi',
+        toFn: v => v * 0.000145038,
+        fromFn: v => v / 0.000145038,
+        formulaFwd: v => `${v} Pa × 1.45038×10⁻⁴ = ${fmt(v * 0.000145038)} psi`,
+        formulaRev: v => `${v} psi ÷ 1.45038×10⁻⁴ = ${fmt(v / 0.000145038)} Pa`
+      },
+      {
+        name: 'Bar → PSI',
+        fromLabel: 'bar', toLabel: 'psi',
+        toFn: v => v * 14.5037738,
+        fromFn: v => v / 14.5037738,
+        formulaFwd: v => `${v} bar × 14.5037738 = ${fmt(v * 14.5037738)} psi`,
+        formulaRev: v => `${v} psi ÷ 14.5037738 = ${fmt(v / 14.5037738)} bar`
+      },
+      {
+        name: 'Atmosfera → PSI',
+        fromLabel: 'atm', toLabel: 'psi',
+        toFn: v => v * 14.6959488,
+        fromFn: v => v / 14.6959488,
+        formulaFwd: v => `${v} atm × 14.6959488 = ${fmt(v * 14.6959488)} psi`,
+        formulaRev: v => `${v} psi ÷ 14.6959488 = ${fmt(v / 14.6959488)} atm`
+      },
+      {
+        name: 'kPa → inHg',
+        fromLabel: 'kPa', toLabel: 'inHg',
+        toFn: v => v * 0.295300,
+        fromFn: v => v / 0.295300,
+        formulaFwd: v => `${v} kPa × 0.295300 = ${fmt(v * 0.295300)} inHg`,
+        formulaRev: v => `${v} inHg ÷ 0.295300 = ${fmt(v / 0.295300)} kPa`
+      },
+      {
+        name: 'Pascal → mmHg (Torr)',
+        fromLabel: 'Pa', toLabel: 'mmHg',
+        toFn: v => v * 0.007500617,
+        fromFn: v => v / 0.007500617,
+        formulaFwd: v => `${v} Pa × 0.007500617 = ${fmt(v * 0.007500617)} mmHg`,
+        formulaRev: v => `${v} mmHg ÷ 0.007500617 = ${fmt(v / 0.007500617)} Pa`
+      },
+    ]
+  },
+  velocita: {
+    items: [
+      {
+        name: 'km/h → mph',
+        fromLabel: 'km/h', toLabel: 'mph',
+        toFn: v => v * 0.621371192,
+        fromFn: v => v / 0.621371192,
+        formulaFwd: v => `${v} km/h × 0.621371192 = ${fmt(v * 0.621371192)} mph`,
+        formulaRev: v => `${v} mph ÷ 0.621371192 = ${fmt(v / 0.621371192)} km/h`
+      },
+      {
+        name: 'km/h → Nodi (kt)',
+        fromLabel: 'km/h', toLabel: 'kt',
+        toFn: v => v * 0.539956803,
+        fromFn: v => v / 0.539956803,
+        formulaFwd: v => `${v} km/h × 0.539956803 = ${fmt(v * 0.539956803)} kt`,
+        formulaRev: v => `${v} kt ÷ 0.539956803 = ${fmt(v / 0.539956803)} km/h`
+      },
+      {
+        name: 'm/s → mph',
+        fromLabel: 'm/s', toLabel: 'mph',
+        toFn: v => v * 2.236936292,
+        fromFn: v => v / 2.236936292,
+        formulaFwd: v => `${v} m/s × 2.236936292 = ${fmt(v * 2.236936292)} mph`,
+        formulaRev: v => `${v} mph ÷ 2.236936292 = ${fmt(v / 2.236936292)} m/s`
+      },
+      {
+        name: 'm/s → ft/s',
+        fromLabel: 'm/s', toLabel: 'ft/s',
+        toFn: v => v * 3.280839895,
+        fromFn: v => v / 3.280839895,
+        formulaFwd: v => `${v} m/s × 3.280839895 = ${fmt(v * 3.280839895)} ft/s`,
+        formulaRev: v => `${v} ft/s ÷ 3.280839895 = ${fmt(v / 3.280839895)} m/s`
+      },
+      {
+        name: 'm/s → Mach (ISA s.l.)',
+        fromLabel: 'm/s', toLabel: 'Mach',
+        toFn: v => v / 340.29,
+        fromFn: v => v * 340.29,
+        formulaFwd: v => `${v} m/s ÷ 340.29 = ${fmt(v / 340.29)} Mach`,
+        formulaRev: v => `${v} Mach × 340.29 = ${fmt(v * 340.29)} m/s`
+      },
+    ]
+  },
+  temperatura: {
+    items: [
+      {
+        name: 'Celsius → Fahrenheit',
+        fromLabel: '°C', toLabel: '°F',
+        toFn: v => v * 9/5 + 32,
+        fromFn: v => (v - 32) * 5/9,
+        formulaFwd: v => `(${v} × 9/5) + 32 = ${fmt(v * 9/5 + 32)} °F`,
+        formulaRev: v => `(${v} − 32) × 5/9 = ${fmt((v - 32) * 5/9)} °C`
+      },
+      {
+        name: 'Celsius → Kelvin',
+        fromLabel: '°C', toLabel: 'K',
+        toFn: v => v + 273.15,
+        fromFn: v => v - 273.15,
+        formulaFwd: v => `${v} + 273.15 = ${fmt(v + 273.15)} K`,
+        formulaRev: v => `${v} − 273.15 = ${fmt(v - 273.15)} °C`
+      },
+      {
+        name: 'Kelvin → Rankine',
+        fromLabel: 'K', toLabel: '°R',
+        toFn: v => v * 1.8,
+        fromFn: v => v / 1.8,
+        formulaFwd: v => `${v} K × 1.8 = ${fmt(v * 1.8)} °R`,
+        formulaRev: v => `${v} °R ÷ 1.8 = ${fmt(v / 1.8)} K`
+      },
+      {
+        name: 'Fahrenheit → Kelvin',
+        fromLabel: '°F', toLabel: 'K',
+        toFn: v => (v - 32) * 5/9 + 273.15,
+        fromFn: v => (v - 273.15) * 9/5 + 32,
+        formulaFwd: v => `(${v} − 32) × 5/9 + 273.15 = ${fmt((v-32)*5/9+273.15)} K`,
+        formulaRev: v => `(${v} − 273.15) × 9/5 + 32 = ${fmt((v-273.15)*9/5+32)} °F`
+      },
+    ]
+  },
+  potenza: {
+    items: [
+      {
+        name: 'Watt → Cavalli Vapore (HP)',
+        fromLabel: 'W', toLabel: 'hp',
+        toFn: v => v * 0.001341022,
+        fromFn: v => v / 0.001341022,
+        formulaFwd: v => `${v} W × 0.001341022 = ${fmt(v * 0.001341022)} hp`,
+        formulaRev: v => `${v} hp ÷ 0.001341022 = ${fmt(v / 0.001341022)} W`
+      },
+      {
+        name: 'kW → Cavalli Vapore (HP)',
+        fromLabel: 'kW', toLabel: 'hp',
+        toFn: v => v * 1.341022089,
+        fromFn: v => v / 1.341022089,
+        formulaFwd: v => `${v} kW × 1.341022089 = ${fmt(v * 1.341022089)} hp`,
+        formulaRev: v => `${v} hp ÷ 1.341022089 = ${fmt(v / 1.341022089)} kW`
+      },
+      {
+        name: 'Watt → BTU/h',
+        fromLabel: 'W', toLabel: 'BTU/h',
+        toFn: v => v * 3.412141633,
+        fromFn: v => v / 3.412141633,
+        formulaFwd: v => `${v} W × 3.412141633 = ${fmt(v * 3.412141633)} BTU/h`,
+        formulaRev: v => `${v} BTU/h ÷ 3.412141633 = ${fmt(v / 3.412141633)} W`
+      },
+      {
+        name: 'kW → Ton Refrigerazione',
+        fromLabel: 'kW', toLabel: 'TR',
+        toFn: v => v * 0.284345136,
+        fromFn: v => v / 0.284345136,
+        formulaFwd: v => `${v} kW × 0.284345136 = ${fmt(v * 0.284345136)} TR`,
+        formulaRev: v => `${v} TR ÷ 0.284345136 = ${fmt(v / 0.284345136)} kW`
+      },
+      {
+        name: 'Watt → ft·lbf/s',
+        fromLabel: 'W', toLabel: 'ft·lbf/s',
+        toFn: v => v * 0.737562149,
+        fromFn: v => v / 0.737562149,
+        formulaFwd: v => `${v} W × 0.737562149 = ${fmt(v * 0.737562149)} ft·lbf/s`,
+        formulaRev: v => `${v} ft·lbf/s ÷ 0.737562149 = ${fmt(v / 0.737562149)} W`
+      },
+    ]
+  },
+  area: {
+    items: [
+      {
+        name: 'm² → ft²',
+        fromLabel: 'm²', toLabel: 'ft²',
+        toFn: v => v * 10.7639104,
+        fromFn: v => v / 10.7639104,
+        formulaFwd: v => `${v} m² × 10.7639104 = ${fmt(v * 10.7639104)} ft²`,
+        formulaRev: v => `${v} ft² ÷ 10.7639104 = ${fmt(v / 10.7639104)} m²`
+      },
+      {
+        name: 'm² → in²',
+        fromLabel: 'm²', toLabel: 'in²',
+        toFn: v => v * 1550.0031,
+        fromFn: v => v / 1550.0031,
+        formulaFwd: v => `${v} m² × 1550.0031 = ${fmt(v * 1550.0031)} in²`,
+        formulaRev: v => `${v} in² ÷ 1550.0031 = ${fmt(v / 1550.0031)} m²`
+      },
+      {
+        name: 'km² → Miglio²',
+        fromLabel: 'km²', toLabel: 'mi²',
+        toFn: v => v * 0.386102159,
+        fromFn: v => v / 0.386102159,
+        formulaFwd: v => `${v} km² × 0.386102159 = ${fmt(v * 0.386102159)} mi²`,
+        formulaRev: v => `${v} mi² ÷ 0.386102159 = ${fmt(v / 0.386102159)} km²`
+      },
+      {
+        name: 'Ettaro → Acro',
+        fromLabel: 'ha', toLabel: 'acre',
+        toFn: v => v * 2.471053815,
+        fromFn: v => v / 2.471053815,
+        formulaFwd: v => `${v} ha × 2.471053815 = ${fmt(v * 2.471053815)} acre`,
+        formulaRev: v => `${v} acre ÷ 2.471053815 = ${fmt(v / 2.471053815)} ha`
+      },
+      {
+        name: 'cm² → in²',
+        fromLabel: 'cm²', toLabel: 'in²',
+        toFn: v => v * 0.15500031,
+        fromFn: v => v / 0.15500031,
+        formulaFwd: v => `${v} cm² × 0.15500031 = ${fmt(v * 0.15500031)} in²`,
+        formulaRev: v => `${v} in² ÷ 0.15500031 = ${fmt(v / 0.15500031)} cm²`
+      },
+    ]
+  },
+};
+
+// ═══════════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════════
+function fmt(n) {
+  if (!isFinite(n)) return '—';
+  const abs = Math.abs(n);
+  if (abs === 0) return '0';
+  if (abs >= 1e10 || (abs < 0.0001 && abs > 0)) return n.toExponential(6);
+  if (abs >= 10000) return n.toLocaleString('en-US', {maximumFractionDigits: 4});
+  return parseFloat(n.toPrecision(8)).toString();
+}
+
+// ═══════════════════════════════════════════════════════
+//  BUILD CARDS
+// ═══════════════════════════════════════════════════════
+function buildCard(item) {
+  const card = document.createElement('div');
+  card.className = 'conv-card';
+
+  // corner ornaments
+  ['tl','br'].forEach(c => {
+    const d = document.createElement('div');
+    d.className = `corner ${c}`;
+    card.appendChild(d);
+  });
+
+  card.innerHTML += `
+    <div class="conv-name">${item.name}</div>
+    <div class="io-row">
+      <div class="io-group">
+        <div class="io-label">${item.fromLabel}</div>
+        <input class="io-input from-input" type="number" placeholder="0" value="">
+      </div>
+      <button class="arrow-btn" title="Inverti">⇄</button>
+      <div class="io-group">
+        <div class="io-label">${item.toLabel}</div>
+        <input class="io-input result to-input" type="number" placeholder="—" readonly>
+      </div>
+    </div>
+    <div class="formula-box">
+      <div class="formula-label">FORMULA</div>
+      <div class="formula-text">—</div>
+    </div>
+  `;
+
+  const fromIn  = card.querySelector('.from-input');
+  const toIn    = card.querySelector('.to-input');
+  const fmlBox  = card.querySelector('.formula-text');
+  const arrowBtn = card.querySelector('.arrow-btn');
+
+  let fwd = true; // direction: fwd = from→to
+
+  function compute() {
+    const raw = fromIn.value.trim();
+    if (raw === '' || raw === '-') { toIn.value = ''; fmlBox.textContent = '—'; return; }
+    const v = parseFloat(raw);
+    if (isNaN(v)) { toIn.value = 'ERR'; fmlBox.textContent = 'Input non valido'; return; }
+    if (fwd) {
+      toIn.value   = fmt(item.toFn(v));
+      fmlBox.textContent = item.formulaFwd(v);
+    } else {
+      toIn.value   = fmt(item.fromFn(v));
+      fmlBox.textContent = item.formulaRev(v);
+    }
+  }
+
+  fromIn.addEventListener('input', compute);
+
+  arrowBtn.addEventListener('click', () => {
+    fwd = !fwd;
+    // swap labels
+    const fl = card.querySelector('.io-group:first-child .io-label');
+    const tl = card.querySelector('.io-group:last-child .io-label');
+    [fl.textContent, tl.textContent] = [tl.textContent, fl.textContent];
+    // transfer value
+    fromIn.value = '';
+    toIn.value   = '';
+    fmlBox.textContent = '—';
+    fromIn.focus();
+  });
+
+  return card;
+}
+
+function buildAll() {
+  for (const [key, cat] of Object.entries(data)) {
+    const container = document.getElementById(`conv-${key}`);
+    if (!container) continue;
+    cat.items.forEach(item => container.appendChild(buildCard(item)));
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  TABS
+// ═══════════════════════════════════════════════════════
+document.getElementById('tabs').addEventListener('click', e => {
+  const t = e.target.closest('.tab');
+  if (!t) return;
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById('panel-' + t.dataset.panel).classList.add('active');
+});
+
+// ═══════════════════════════════════════════════════════
+//  CLOCK
+// ═══════════════════════════════════════════════════════
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getUTCHours()).padStart(2,'0');
+  const m = String(now.getUTCMinutes()).padStart(2,'0');
+  const s = String(now.getUTCSeconds()).padStart(2,'0');
+  document.getElementById('clock').textContent = `UTC ${h}:${m}:${s}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+buildAll();
+</script>
+</body>
+</html>
